@@ -1,4 +1,4 @@
-package loga.dev12.spring.entity;
+package loga.dev.spring.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +17,8 @@ public class Note {
 
     private String content;
 
-    public Note(String title, String content) {
+    public Note(Long id, String title, String content) {
+        this.id = id;
         this.title = title;
         this.content = content;
     }

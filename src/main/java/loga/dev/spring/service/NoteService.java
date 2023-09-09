@@ -1,6 +1,6 @@
-package loga.dev12.spring.service;
+package loga.dev.spring.service;
 
-import loga.dev12.spring.entity.Note;
+import loga.dev.spring.entity.Note;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,9 +51,10 @@ public class NoteService {
         );
     }
 
-    public Optional<Note> getById(long id) {
-        return Optional.ofNullable(noteMap.get(id));
+    public Note getById(long id) {
+        return noteMap.get(id);
     }
+
 
     private long generateUniqueId() {
         long id;
