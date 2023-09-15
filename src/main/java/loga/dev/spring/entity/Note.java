@@ -4,12 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.Data;
-
+import jakarta.persistence.*;
 @Data
 @Getter
 @Setter
 @ToString
+@Entity
+@Table(name = "note")
 public class Note {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long id;
 
@@ -21,5 +26,9 @@ public class Note {
         this.id = id;
         this.title = title;
         this.content = content;
+    }
+
+    public Note() {
+
     }
 }

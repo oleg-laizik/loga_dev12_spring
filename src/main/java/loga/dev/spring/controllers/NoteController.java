@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
 @Controller
 @RequiredArgsConstructor
 public class NoteController {
@@ -26,8 +27,8 @@ public class NoteController {
         return modelAndView;
     }
 
-    @GetMapping("/edit")
-    public ModelAndView edit(@RequestParam("id") Long id) {
+    @GetMapping("/edit/{id}")
+    public ModelAndView edit(@PathVariable("id") Long id) {
         ModelAndView modelAndView = new ModelAndView("edit");
         Note note = noteService.getById(id);
         modelAndView.addObject("note", note);
@@ -41,8 +42,8 @@ public class NoteController {
         return modelAndView;
     }
 
-    @PostMapping("/delete/{id}")
-    public ModelAndView delete(@PathVariable("id") Long id) {
+    @PostMapping("/delete")
+    public ModelAndView delete(@RequestParam("id") Long id) {
         ModelAndView modelAndView = new ModelAndView("redirect:/list");
         noteService.deleteById(id);
         return modelAndView;

@@ -1,35 +1,35 @@
 package loga.dev.spring.service;
 
 import loga.dev.spring.entity.Note;
+import loga.dev.spring.repository.NoteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 public class NoteService {
 
-    private final Map<Long, Note> noteMap = new HashMap<>();
-    private final Random random = new Random();
+    private final NoteRepository noteRepository;
+
+    @Autowired
+    public NoteService(NoteRepository noteRepository) {
+        this.noteRepository = noteRepository;
+    }
 
     public List<Note> listAll() {
-        return new ArrayList<>(noteMap.values());
+        return noteRepository.findAll();
     }
 
     public Note add(Note note) {
-        long id = generateUniqueId();
-        note.setId(id);
-        noteMap.put(id, note);
-        return note;
+        return noteRepository.save(note);
     }
 
     public void deleteById(long id) {
-        Optional<Note> note = getNoteById(id);
+        Optional<Note> note = noteRepository.findById(id);
         note.ifPresentOrElse(
-                n -> noteMap.remove(id),
+                n -> noteRepository.deleteById(id),
                 () -> {
                     throw new RuntimeException("Note with ID " + id + " not found");
                 }
@@ -37,34 +37,15 @@ public class NoteService {
     }
 
     public void update(Note note) {
-        long id = note.getId();
-        Optional<Note> existingNote = getNoteById(id);
-        existingNote.ifPresentOrElse(
-                n -> {
-                    n.setTitle(note.getTitle());
-                    n.setContent(note.getContent());
-                    noteMap.put(id, n);
-                },
-                () -> {
-                    throw new RuntimeException("Note with ID " + id + " not found");
-                }
-        );
+        if (noteRepository.existsById(note.getId())) {
+            noteRepository.save(note);
+        } else {
+            throw new RuntimeException("Note with ID " + note.getId() + " not found");
+        }
     }
 
     public Note getById(long id) {
-        return noteMap.get(id);
-    }
-
-
-    private long generateUniqueId() {
-        long id;
-        do {
-            id = random.nextLong();
-        } while (id <= 0 || noteMap.containsKey(id));
-        return id;
-    }
-
-    private Optional<Note> getNoteById(long id) {
-        return Optional.ofNullable(noteMap.get(id));
+        return noteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Note with ID " + id + " not found"));
     }
 }
